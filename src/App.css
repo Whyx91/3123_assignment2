@@ -45,21 +45,45 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
+/* Fix for the nested rule */
 .weather-info h2 {
-  margin: 0;
+  background-color: #4682b4; /* A nice blue background */
+  color: white; /* White text for contrast */
+  padding: 10px;
+  border-radius: 8px;
+  text-transform: uppercase; /* Makes the city name uppercase */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Adds a subtle shadow */
+  margin-bottom: 20px;
 }
 
-.weather-info h3 {
-  font-size: 2em;
-  margin: 10px 0;
-}
-
-.details {
+.forecast {
   display: flex;
-  justify-content: center;
-  gap: 20px;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
-.details p {
-  margin: 0;
+.day {
+  background: #e6f7ff; /* Light blue background */
+  color: #333; /* Darker text color for better contrast */
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 18%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Adds a hover effect */
 }
+
+.day:hover {
+  transform: scale(1.05); /* Slight zoom on hover */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* More prominent shadow on hover */
+}
+
+.day h3 {
+  font-size: 1.1em;
+  margin-bottom: 10px;
+}
+
+.day p {
+  margin: 5px 0;
+}
+
