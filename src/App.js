@@ -1,25 +1,30 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "./App.css"; // Ensure this file exists and contains your styles
+import "./App.css"; 
 
-const API_KEY = "cd533008b9f53f872c6c7b99d7f893ca"; // Your actual OpenWeatherMap API key
+const API_KEY = "cd533008b9f53f872c6c7b99d7f893ca"; // my API key openWeather
 
 function App() {
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
 
-  // Function to fetch weather data
+  // 5-day forecast weather data
   const fetchWeather = async () => {
     if (!city.trim()) return alert("Please enter a city!");
     try {
       const response = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+        `https://api.openweathermap.org/data/2.5/forecast?q=${city.trim()}&appid=${API_KEY}&units=metric`
       );
-      const { name, weather, main, wind } = response.data; // Destructure response
-      setWeather({ name, weather: weather[0], main, wind });
+      
+      // one forecast per day (12:00 PM)
+      const dailyForecasts = response.data.list.filter((reading) =>
+        reading.dt_txt.includes("12:00:00")
+      );
+
+      setWeather({ city: response.data.city.name, forecasts: dailyForecasts });
     } catch (error) {
       console.error("Error fetching weather data:", error);
-      alert("City not found! Please try again.");
+      alert(error.response?.data?.message || "City not found! Please try again.");
     }
   };
 
@@ -43,12 +48,19 @@ function App() {
 
       {weather && (
         <div className="weather-info">
-          <h2>{weather.name}</h2>
-          <p>{weather.weather.description}</p>
-          <h3>{Math.round(weather.main.temp)}°C</h3>
-          <div className="details">
-            <p>Humidity: {weather.main.humidity}%</p>
-            <p>Wind Speed: {weather.wind.speed} m/s</p>
+          <h2>{weather.city}</h2>
+          <div className="forecast">
+            {weather.forecasts.map((forecast, index) => (
+              <div key={index} className="day">
+                <h3>{new Date(forecast.dt_txt).toLocaleDateString()}</h3>
+                <p>{forecast.weather[0].description}</p>
+                <p>Temperature: {Math.round(forecast.main.temp)}°C</p>
+                <p>Max Temp: {Math.round(forecast.main.temp_max)}°C</p>
+                <p>Min Temp: {Math.round(forecast.main.temp_min)}°C</p>
+                <p>Humidity: {forecast.main.humidity}%</p>
+                <p>Wind Speed: {forecast.wind.speed} m/s</p>
+              </div>
+            ))}
           </div>
         </div>
       )}
